@@ -1,4 +1,5 @@
 package ltd.fdsa.code.extension;
+
 import freemarker.template.SimpleNumber;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
@@ -10,11 +11,13 @@ import java.util.List;
 
 @Slf4j
 public class StringLengthMethod implements TemplateMethodModelEx {
-    public TemplateModel exec(List args) throws TemplateModelException {
-        if (args.size() != 1) {
+
+    @Override
+    public Object exec(List list) throws TemplateModelException {
+        if (list.size() != 1) {
             throw new TemplateModelException("Wrong arguments");
         }
-        var input = args.get(0).toString();
+        var input = list.get(0).toString();
         var length = input.length();
         return new SimpleNumber(length);
     }

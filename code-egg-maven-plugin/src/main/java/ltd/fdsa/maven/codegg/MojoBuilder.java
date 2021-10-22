@@ -4,7 +4,9 @@ import com.google.common.base.Strings;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
+import lombok.var;
 import ltd.fdsa.code.CodeEgg;
+import ltd.fdsa.code.model.Module;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -45,7 +47,13 @@ public class MojoBuilder extends AbstractMojo {
                 output = "./output";
             }
             CodeEgg egg = new CodeEgg();
-            egg.execute(this.input, this.output, this.template);
+            var builder = Module.builder();
+            builder.name(this.project.getName());
+            builder.description(this.project.getDescription());
+            builder.jarFolder(input);
+            builder.outputFolder(output);
+            builder.templateFolder("");
+            egg.execute(builder);
 
         } catch (Exception e) {
             log.error("execute", e);

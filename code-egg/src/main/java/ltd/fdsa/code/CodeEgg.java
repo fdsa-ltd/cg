@@ -11,6 +11,7 @@ import lombok.var;
 import ltd.fdsa.code.annotation.Column;
 import ltd.fdsa.code.annotation.Relation;
 import ltd.fdsa.code.annotation.Table;
+import ltd.fdsa.code.extension.StringDictMethod;
 import ltd.fdsa.code.extension.StringLengthMethod;
 import ltd.fdsa.code.model.Entity;
 import ltd.fdsa.code.model.Field;
@@ -18,14 +19,13 @@ import ltd.fdsa.code.model.Module;
 import ltd.fdsa.code.model.RelationDefine;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class CodeEgg {
@@ -36,81 +36,65 @@ public class CodeEgg {
 
     static {
         // 默认注解
-
         @Table
         final class c {
             @Column
             String name;
-
         }
         DEFAULT_TABLE = c.class.getAnnotation(Table.class);
         DEFAULT_COLUMN = c.class.getDeclaredFields()[0].getAnnotation(Column.class);
-
     }
 
     Configuration configuration = new Configuration(Configuration.VERSION_2_3_0);
     File templateFile;
 
-    public void execute(String jarFolder, String outputFolder, String templateFolder) {
+    public void execute(Module.ModuleBuilder builder) {
         log.info("------------------------------------------------------------------------");
-        log.info("Try to generate code in ");
+        log.info("Try to generate code in " + builder.getJarFolder());
         log.info("------------------------------------------------------------------------");
 
         try {
-            log.info("Generate file start");
-
-            var builder = Module.builder();
-            builder.name("project name");
-            builder.description("description of the project");
-            log.info("得到class描述");
-            ClassLoader classLoader = new ClassLoader(jarFolder);
+            log.info("Get java class description");
+            ClassLoader classLoader = new ClassLoader(builder.getJarFolder());
             var classList = classLoader.loadClasses(entry -> entry.getName().endsWith(".class"), clazz -> IEntity.class.isAssignableFrom(clazz) && !IEntity.class.equals(clazz));
             getEntities(classLoader, classList, builder);
+            log.info("------------------------------------------------------------------------");
             log.info(builder.build().toString());
-            log.info("得到模板文件");
-
-
+            log.info("------------------------------------------------------------------------");
+            log.info("Get template files");
             // step1 创建freeMarker配置实例
-
-            if (Strings.isNullOrEmpty(templateFolder)) {
+            if (Strings.isNullOrEmpty(builder.getTemplateFolder())) {
                 var file = CodeEgg.class.getClassLoader().getResource("templates").getFile();
-                try {
-                    JarFile jarFile = new JarFile(file.substring(5, file.length() - 11));
-                    Enumeration<JarEntry> entries = jarFile.entries();
-                    while (entries.hasMoreElements()) {
-                        var entry = entries.nextElement();
-                        if (entry.isDirectory()) {
-                            continue;
-                        }
-                        var path = entry.getName();
-                        if (!path.startsWith("templates")) {
-                            continue;
-                        }
-                        var targetFile = new File("./output/" + path);
-                        if (!targetFile.getParentFile().exists()) {
-                            targetFile.getParentFile().mkdirs();
-                        }
-                        var initialStream = CodeEgg.class.getClassLoader().getResourceAsStream(path);
-
-                        log.info("copy:{}", targetFile);
-                        Files.copy(initialStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        initialStream.close();
+                JarFile jarFile = new JarFile(file.substring(6, file.length() - 11));
+                Enumeration<JarEntry> entries = jarFile.entries();
+                while (entries.hasMoreElements()) {
+                    var entry = entries.nextElement();
+                    if (entry.isDirectory()) {
+                        continue;
                     }
-                    templateFolder = "./output/templates";
-                } catch (IOException e) {
-                    log.error("io:", e);
+                    var path = entry.getName();
+                    if (!path.startsWith("templates")) {
+                        continue;
+                    }
+                    var targetFile = new File("./output/" + path);
+                    if (!targetFile.getParentFile().exists()) {
+                        targetFile.getParentFile().mkdirs();
+                    }
+                    var initialStream = CodeEgg.class.getClassLoader().getResourceAsStream(path);
+                    Files.copy(initialStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    initialStream.close();
                 }
+                builder.templateFolder("./output/templates");
             }
-            templateFile = new File(templateFolder);
-
-            log.info(templateFile.getAbsoluteFile().getPath());
+            templateFile = new File(builder.getTemplateFolder());
             // step2 获取模版路径
             configuration.setDirectoryForTemplateLoading(templateFile);
 
             // step3 创建数据模型
             var data = new HashMap<String, Object>();
             data.put("module", builder.build());
-            data.put("extension", new StringLengthMethod());
+            data.put("extension.len", new StringLengthMethod());
+            data.put("extension.dict", new StringDictMethod(builder.getTemplateFolder()));
 
             // step4 加载模版文件
             for (var file : find(templateFile)) {
@@ -120,38 +104,37 @@ public class CodeEgg {
                         data.put("entity", entity);
                         for (var relation : builder.build().getRelations()) {
                             data.put("relation", relation);
-                            sss(file, data, outputFolder);
+                            generateCode(file, data, builder.getOutputFolder());
                         }
-
                     }
                     continue;
                 }
                 if (sourcePath.contains("entity")) {
                     for (var entity : builder.build().getEntities()) {
                         data.put("entity", entity);
-                        sss(file, data, outputFolder);
+                        generateCode(file, data, builder.getOutputFolder());
                     }
                     continue;
-
                 }
                 if (sourcePath.contains("relation")) {
                     for (var relation : builder.build().getRelations()) {
                         data.put("relation", relation);
-                        sss(file, data, outputFolder);
+                        generateCode(file, data, builder.getOutputFolder());
                     }
                     continue;
                 }
-                sss(file, data, outputFolder);
+                generateCode(file, data, builder.getOutputFolder());
             }
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("error:", e);
         }
 
     }
 
-    private void sss(File sourceFile, Object data, String outputFolder) throws IOException {
-
+    private void generateCode(File sourceFile, Object data, String outputFolder) throws IOException {
         try {
+            log.info("------------------------------------------------------------------------");
+            log.info(sourceFile.getPath());
             var source = sourceFile.getPath();
             Template fileNameTemplate = new Template("file", source, configuration);
             StringWriter result = new StringWriter();
@@ -165,7 +148,7 @@ public class CodeEgg {
                 targetFile.getParentFile().mkdirs();
             }
 
-            Writer out  = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile)));
+            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile)));
             // step6 输出文件
             template.process(data, out);
         } catch (FileNotFoundException e) {
@@ -184,7 +167,6 @@ public class CodeEgg {
     }
 
     private void getEntities(ClassLoader classLoader, List<Class<?>> classes, Module.ModuleBuilder moduleBuilder) {
-
         List<Entity> results = new ArrayList<Entity>();
         for (var item : classes) {
             var entityBuilder = Entity.builder();
