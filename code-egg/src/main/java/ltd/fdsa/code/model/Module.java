@@ -9,20 +9,22 @@ public class Module implements Serializable {
     String name;
     String description;
     Entity[] entities;
-    RelationDefine[] relations;
+    Association[] relations;
     /*扩展*/
-    String jarFolder;
+    String inputFolder;
     String outputFolder;
     String templateFolder;
+    String settingFolder;
 
-    Module(String name, String description, Entity[] entities, RelationDefine[] relations, String jarFolder, String outputFolder, String templateFolder) {
+    Module(String name, String description, Entity[] entities, Association[] relations, String inputFolder, String outputFolder, String templateFolder, String settingFolder) {
         this.name = name;
         this.description = description;
         this.entities = entities;
         this.relations = relations;
-        this.jarFolder = jarFolder;
+        this.inputFolder = inputFolder;
         this.outputFolder = outputFolder;
         this.templateFolder = templateFolder;
+        this.settingFolder = settingFolder;
     }
 
     public static ModuleBuilder builder() {
@@ -33,16 +35,21 @@ public class Module implements Serializable {
         private String name;
         private String description;
         private Entity[] entities;
-        private RelationDefine[] relations;
-        private String jarFolder;
+        private Association[] relations;
+        private String inputFolder;
         private String outputFolder;
         private String templateFolder;
+        private String settingFolder;
 
         ModuleBuilder() {
         }
 
-        public String getJarFolder() {
-            return jarFolder;
+        public String getSettingFolder() {
+            return settingFolder;
+        }
+
+        public String getInputFolder() {
+            return inputFolder;
         }
 
         public String getOutputFolder() {
@@ -68,13 +75,13 @@ public class Module implements Serializable {
             return this;
         }
 
-        public ModuleBuilder relations(RelationDefine[] relations) {
+        public ModuleBuilder relations(Association[] relations) {
             this.relations = relations;
             return this;
         }
 
-        public ModuleBuilder jarFolder(String jarFolder) {
-            this.jarFolder = jarFolder;
+        public ModuleBuilder inputFolder(String inputFolder) {
+            this.inputFolder = inputFolder;
             return this;
         }
 
@@ -88,12 +95,17 @@ public class Module implements Serializable {
             return this;
         }
 
+        public ModuleBuilder settingFolder(String settingFolder) {
+            this.settingFolder = settingFolder;
+            return this;
+        }
+
         public Module build() {
-            return new Module(name, description, entities, relations, jarFolder, outputFolder, templateFolder);
+            return new Module(name, description, entities, relations, inputFolder, outputFolder, templateFolder, settingFolder);
         }
 
         public String toString() {
-            return "Module.ModuleBuilder(name=" + this.name + ", description=" + this.description + ", entities=" + java.util.Arrays.deepToString(this.entities) + ", relations=" + java.util.Arrays.deepToString(this.relations) + ", jarFolder=" + this.jarFolder + ", outputFolder=" + this.outputFolder + ", templateFolder=" + this.templateFolder + ")";
+            return "Module.ModuleBuilder(name=" + this.name + ", description=" + this.description + ", entities=" + java.util.Arrays.deepToString(this.entities) + ", relations=" + java.util.Arrays.deepToString(this.relations) + ", inputFolder=" + this.inputFolder + ", outputFolder=" + this.outputFolder + ", templateFolder=" + this.templateFolder + ", settingFolder=" + this.settingFolder + ")";
         }
     }
 }

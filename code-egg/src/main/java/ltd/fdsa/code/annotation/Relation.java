@@ -1,6 +1,6 @@
 package ltd.fdsa.code.annotation;
 
-import ltd.fdsa.code.model.RelationDefine;
+import ltd.fdsa.code.model.Association;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,9 +10,15 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Relation {
-    Class entity() default void.class;
+    String value() default "";
+
+    String name() default "";
+
+    String remark() default "";
+
+    Class<?> entity() default void.class;
 
     String field() default "id";
 
-    RelationDefine.Type value() default RelationDefine.Type.One2One;
+    Association.Type type() default Association.Type.One2One;
 }

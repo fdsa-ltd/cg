@@ -9,11 +9,12 @@ import java.io.Serializable;
 @Data
 public class Field implements Serializable {
     String name;
-    String code;
-    String remark;
-    boolean isNull;
-    boolean autoIncrement;
     String type;
+    String code;
+    String display;
+    String remark;
+    Boolean nullable;
+    Boolean primary;
     int length;
     int scale;
 }

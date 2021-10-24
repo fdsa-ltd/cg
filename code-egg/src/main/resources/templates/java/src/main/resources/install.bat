@@ -1,3 +1,4 @@
+<#noparse>
 
 @echo off
 setlocal enabledelayedexpansion
@@ -53,3 +54,5 @@ goto help
 
 :end
     endlocal
+
+</#noparse>

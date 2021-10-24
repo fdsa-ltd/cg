@@ -1,3 +1,4 @@
+<#noparse>
 #! /bin/sh
 # chkconfig: 2345 10 90
 # description: service for app
@@ -36,3 +37,4 @@ uninstall)
   exit 1  
   ;;  
 esac
+</#noparse>

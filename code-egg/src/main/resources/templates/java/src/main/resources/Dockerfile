@@ -1,3 +1,4 @@
+<#noparse>
 FROM openjdk:8-jre-slim
 MAINTAINER FDSA
 
@@ -12,3 +13,4 @@ ENV PARAMS=""
 ENV TZ=PRC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENTRYPOINT ["nohup", "java", "-jar","./app.jar", "--spring.profiles.active=prd", "&"]
+</#noparse>

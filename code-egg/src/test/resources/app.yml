@@ -1,0 +1,3 @@
+pg:
+  type:
+    String: nvarchar(255)

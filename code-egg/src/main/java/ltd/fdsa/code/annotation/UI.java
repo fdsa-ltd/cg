@@ -23,7 +23,7 @@ public @interface UI {
 
     int length() default 0;
 
-    public enum Show {
+    enum Show {
         Default,
         Create, Update, List, Query,
     }

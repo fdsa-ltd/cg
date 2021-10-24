@@ -13,6 +13,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 
 @Slf4j
 public class ClassLoader extends URLClassLoader {
+    List<String> list;
 
     public ClassLoader(String... paths) {
         this(getURLs(paths), ClassLoader.class.getClassLoader());
@@ -30,7 +32,7 @@ public class ClassLoader extends URLClassLoader {
     }
 
     public List<Class<?>> loadClasses(JarEntryFilter entryFilter, ClassFilter classFilter) {
-        List<Class<?>> results = new ArrayList<Class<?>>();
+        List<Class<?>> results = new ArrayList<>();
         for (var url : this.getURLs()) {
             var file = url.getFile();
             JarFile jarFile = null;
@@ -46,18 +48,17 @@ public class ClassLoader extends URLClassLoader {
                     var path = entry.getName();
                     path = path.substring(0, path.lastIndexOf("."));
                     path = path.replace("/", ".");
-                    Class<?> obj = null;
+
                     try {
-                        obj = this.loadClass(path);
+                        var obj = this.loadClass(path);
+                        if (classFilter.accept(obj)) {
+                            results.add(obj);
+                        }
                     } catch (ClassNotFoundException e) {
                         continue;
                     }
-                    if (classFilter.accept(obj)) {
-                        results.add(obj);
-                    }
                 }
             }
-
         }
         return results;
     }
@@ -74,13 +75,33 @@ public class ClassLoader extends URLClassLoader {
         return fieldList.toArray(f);
     }
 
+    public List<String> jarFiles() throws IOException {
+        if (this.list == null) {
+            this.list = new ArrayList<>();
+            JarFile jarFile = new JarFile(ClassLoader.class.getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .getPath());
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                var entry = entries.nextElement();
+                if (entry.isDirectory()) {
+                    continue;
+                }
+                var path = entry.getName();
+                list.add(path);
+            }
+        }
+        return list;
+    }
+
     private static URL[] getURLs(String[] paths) {
-        List<String> dirs = new ArrayList<String>();
+        List<String> dirs = new ArrayList<>();
         for (String path : paths) {
             dirs.add(path);
             collectDirs(path, dirs);
         }
-        List<URL> urls = new ArrayList<URL>();
+        List<URL> urls = new ArrayList<>();
         for (String path : dirs) {
             urls.addAll(doGetURLs(path));
         }
@@ -97,7 +118,7 @@ public class ClassLoader extends URLClassLoader {
             return;
         }
 
-        for (File child : current.listFiles()) {
+        for (File child : Objects.requireNonNull(current.listFiles())) {
             if (!child.isDirectory()) {
                 continue;
             }
@@ -115,20 +136,16 @@ public class ClassLoader extends URLClassLoader {
         Assert.isTrue(jarPath.exists() && jarPath.isDirectory(), "jar包路径必须存在且为目录.");
 
         /* set filter */
-        FileFilter jarFilter = new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith(".jar");
-            }
-        };
+        FileFilter jarFilter = pathname -> pathname.getName().endsWith(".jar");
 
         /* iterate all jar */
         File[] allJars = new File(path).listFiles(jarFilter);
-        List<URL> jarURLs = new ArrayList<URL>(allJars.length);
+        assert allJars != null;
+        List<URL> jarURLs = new ArrayList<>(allJars.length);
 
-        for (int i = 0; i < allJars.length; i++) {
+        for (File allJar : allJars) {
             try {
-                jarURLs.add(allJars[i].toURI().toURL());
+                jarURLs.add(allJar.toURI().toURL());
             } catch (Exception e) {
                 log.error("系统加载jar包出错", e);
             }
@@ -137,7 +154,7 @@ public class ClassLoader extends URLClassLoader {
         return jarURLs;
     }
 
-    private static class Assert{
+    private static class Assert {
         public static void isTrue(boolean expression, String message) {
             if (!expression) {
                 throw new IllegalArgumentException(message);
@@ -148,29 +165,11 @@ public class ClassLoader extends URLClassLoader {
 
     @FunctionalInterface
     public interface ClassFilter {
-
-        /**
-         * Tests whether or not the specified abstract pathname should be
-         * included in a pathname list.
-         *
-         * @param clazz The abstract pathname to be tested
-         * @return <code>true</code> if and only if <code>pathname</code>
-         * should be included
-         */
-        boolean accept(Class clazz);
+        boolean accept(Class<?> clazz);
     }
 
     @FunctionalInterface
     public interface JarEntryFilter {
-
-        /**
-         * Tests whether or not the specified abstract pathname should be
-         * included in a pathname list.
-         *
-         * @param entry The abstract pathname to be tested
-         * @return <code>true</code> if and only if <code>pathname</code>
-         * should be included
-         */
         boolean accept(JarEntry entry);
     }
 }

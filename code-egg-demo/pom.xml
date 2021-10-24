@@ -49,6 +49,10 @@
                             <goal>package</goal>
                         </goals>
                         <configuration>
+                            <input></input>
+                            <output>D:\Work\cg\output</output>
+                            <template>D:\Work\cg\code-egg\src\main\resources\templates</template>
+                            <setting>./setting</setting>
                         </configuration>
                     </execution>
                 </executions>

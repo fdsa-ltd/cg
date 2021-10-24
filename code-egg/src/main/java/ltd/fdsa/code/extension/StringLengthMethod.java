@@ -2,7 +2,6 @@ package ltd.fdsa.code.extension;
 
 import freemarker.template.SimpleNumber;
 import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;

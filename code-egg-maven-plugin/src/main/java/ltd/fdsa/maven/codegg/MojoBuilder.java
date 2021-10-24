@@ -27,12 +27,14 @@ public class MojoBuilder extends AbstractMojo {
     @Parameter(property = "input")
     private String input;
 
-
     @Parameter(property = "output")
     private String output;
 
     @Parameter(property = "template")
     private String template;
+
+    @Parameter(property = "setting")
+    private String setting;
 
 
     @Override
@@ -50,9 +52,10 @@ public class MojoBuilder extends AbstractMojo {
             var builder = Module.builder();
             builder.name(this.project.getName());
             builder.description(this.project.getDescription());
-            builder.jarFolder(input);
+            builder.inputFolder(input);
             builder.outputFolder(output);
-            builder.templateFolder("");
+            builder.templateFolder(template);
+            builder.settingFolder(setting);
             egg.execute(builder);
 
         } catch (Exception e) {
