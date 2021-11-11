@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -19,13 +20,16 @@ public class TestCase {
     @Before
     public void before() {
 
-
     }
 
     @Test
     public void testSend() {
 
-
+        var list = "ilovechina.".split("");
+        Arrays.stream(list).parallel().forEach(a -> {
+            log.info(a);
+        });
+        log.info("finished");
     }
 
     @Test
