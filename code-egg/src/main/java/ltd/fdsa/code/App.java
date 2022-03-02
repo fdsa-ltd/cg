@@ -32,16 +32,16 @@ public class App implements CommandLineRunner {
                 inputFolder = file.getParent();
             }
         }
-        var builder = Module.builder();
-        builder.name("project name");
-        builder.description("description of the project");
-        builder.inputFolder(inputFolder);
-        builder.outputFolder("./output");
-        builder.templateFolder("");
-        builder.settingFolder("./settings");
-        System.out.println(builder.build().toString());
+        var moduleBuilder = Module.builder();
+        moduleBuilder.name("project name");
+        moduleBuilder.description("description of the project");
+        moduleBuilder.inputFolder(inputFolder);
+        moduleBuilder.outputFolder("./output");
+        moduleBuilder.templateFolder("");
+        moduleBuilder.settingFolder("./settings");
+        System.out.println(moduleBuilder.build().toString());
         CodeEgg egg = new CodeEgg();
-        egg.execute(builder);
+        egg.execute(moduleBuilder);
     }
 }
 

@@ -55,7 +55,6 @@ public class CodeEgg {
             var classList = classLoader.loadClasses(
                     entry -> entry.getName().endsWith(".class"),
                     clazz -> clazz.getAnnotation(Table.class) != null
-//                            || (IEntity.class.isAssignableFrom(clazz) && !IEntity.class.equals(clazz))
             );
             getEntities(classLoader, classList, builder);
             log.info("------------------------------------------------------------------------");
