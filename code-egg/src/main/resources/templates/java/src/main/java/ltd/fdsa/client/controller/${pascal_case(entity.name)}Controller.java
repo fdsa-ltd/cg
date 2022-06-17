@@ -1,10 +1,10 @@
-package ${dict('project.package','ltd.fdsa.client')}.controller;
+package ${setting('project.package','ltd.fdsa.client')}.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.var; 
-import ${dict('project.package','ltd.fdsa.client')}.view.Result;
-import ${dict('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)};
-import ${dict('project.package','ltd.fdsa.client')}.service.${pascal_case(entity.name)}Service;
+import ${setting('project.package','ltd.fdsa.client')}.view.Result;
+import ${setting('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)};
+import ${setting('project.package','ltd.fdsa.client')}.service.${pascal_case(entity.name)}Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

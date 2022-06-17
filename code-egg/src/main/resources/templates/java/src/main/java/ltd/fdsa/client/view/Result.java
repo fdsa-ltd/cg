@@ -1,4 +1,4 @@
-package ${dict('project.package','ltd.fdsa.client')}.view;
+package ${setting('project.package','ltd.fdsa.client')}.view;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

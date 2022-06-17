@@ -50,24 +50,24 @@ public class CodeEgg {
         log.info("------------------------------------------------------------------------");
 
         try {
+            // step1 获取项目模型定义
             log.info("Get java class description");
             ClassLoader classLoader = new ClassLoader(builder.getInputFolder());
             var classList = classLoader.loadClasses(
                     entry -> entry.getName().endsWith(".class"),
-                    clazz -> clazz.getAnnotation(Table.class) != null
-            );
+                    clazz -> clazz.getAnnotation(Table.class) != null);
             getEntities(classLoader, classList, builder);
             log.info("------------------------------------------------------------------------");
             log.info(builder.build().toString());
             log.info("------------------------------------------------------------------------");
             log.info("Get template files");
-            // step1 创建freeMarker配置实例
-            if (Strings.isNullOrEmpty(builder.getTemplateFolder())) {
+            // step2 获取或创建模板引擎
+            if (!new File(builder.getTemplateFolder()).exists()) {
                 for (var path : classLoader.jarFiles()) {
                     if (!path.startsWith("templates")) {
                         continue;
                     }
-                    var targetFile = new File("./output/" + path);
+                    var targetFile = new File(builder.getTemplateFolder() + "/" + path.substring("templates".length()));
                     if (!targetFile.getParentFile().exists()) {
                         targetFile.getParentFile().mkdirs();
                     }
@@ -76,42 +76,41 @@ public class CodeEgg {
                     Files.copy(initialStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     initialStream.close();
                 }
-                builder.templateFolder("./output/templates");
             }
             templateFile = new File(builder.getTemplateFolder());
-            // step2 获取模版路径
             configuration.setDirectoryForTemplateLoading(templateFile);
-            configuration.setEncoding(Locale.CHINESE, "UTF-8");
-            // step3 创建数据模型
+            configuration.setEncoding(Locale.getDefault(), "UTF-8");
+            // step3 创建模板的数据模型
             var data = new HashMap<String, Object>();
             var settings = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-            for (var path : classLoader.jarFiles()) {
-                if (!path.startsWith("settings")) {
-                    continue;
-                }
-                if (path.endsWith(".yaml") || path.endsWith(".yml")) {
-                    var d = loadYaml(CodeEgg.class.getClassLoader().getResourceAsStream(path));
-                    settings.putAll(d);
-                } else if (path.endsWith(".properties")) {
-                    var d = loadProp(CodeEgg.class.getClassLoader().getResourceAsStream(path));
-                    settings.putAll(d);
+            if (!new File(builder.getSettingFolder()).exists()) {
+                for (var path : classLoader.jarFiles()) {
+                    if (!path.startsWith("settings")) {
+                        continue;
+                    }
+                    var targetFile = new File(builder.getSettingFolder() + "/" + path.substring("settings".length()));
+                    if (!targetFile.getParentFile().exists()) {
+                        targetFile.getParentFile().mkdirs();
+                    }
+                    var initialStream = CodeEgg.class.getClassLoader().getResourceAsStream(path);
+                    assert initialStream != null;
+                    Files.copy(initialStream, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    initialStream.close();
                 }
             }
-            if (!Strings.isNullOrEmpty(builder.getSettingFolder())) {
-                var file = new File(builder.getSettingFolder());
-                if (file.exists() && file.isDirectory()) {
-                    for (var path : Objects.requireNonNull(file.list())) {
-                        if (path.endsWith(".yaml") || path.endsWith(".yml")) {
-                            var d = loadYaml(new FileInputStream(file.getPath() + "/" + path));
-                            settings.putAll(d);
-                        } else if (path.endsWith(".properties")) {
-                            var d = loadProp(new FileInputStream(file.getPath() + "/" + path));
-                            settings.putAll(d);
-                        }
+            var settingFolder = new File(builder.getSettingFolder());
+            if (settingFolder.exists() && settingFolder.isDirectory()) {
+                for (var path : Objects.requireNonNull(settingFolder.list())) {
+                    if (path.endsWith(".yaml") || path.endsWith(".yml")) {
+                        var d = loadYaml(new FileInputStream(settingFolder.getPath() + "/" + path));
+                        settings.putAll(d);
+                    } else if (path.endsWith(".properties")) {
+                        var d = loadProp(new FileInputStream(settingFolder.getPath() + "/" + path));
+                        settings.putAll(d);
                     }
                 }
             }
-            data.put("dict", new StringDictMethod(settings));
+            data.put("setting", new StringDictMethod(settings));
             data.put("snake_case", new SnakeCaseMethod());
             data.put("camel_case", new CamelCaseMethod());
             data.put("spinal_case", new SpinalCaseMethod());
@@ -160,7 +159,8 @@ public class CodeEgg {
             StringWriter result = new StringWriter();
             fileNameTemplate.process(data, result);
             var targetName = result.toString().substring(this.templateFile.getPath().length() + 1);
-            var templateName = sourceFile.getPath().substring(this.templateFile.getPath().length() + 1).replace("\\", "/");
+            var templateName = sourceFile.getPath().substring(this.templateFile.getPath().length() + 1).replace("\\",
+                    "/");
             Template template = configuration.getTemplate(templateName);
             // step5 生成数据
             File targetFile = new File(outputFolder + "/" + targetName);
@@ -168,7 +168,8 @@ public class CodeEgg {
                 targetFile.getParentFile().mkdirs();
             }
             log.info("generate code: " + targetFile.getPath());
-            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8));
+            Writer out = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8));
             // step6 输出文件
             template.process(data, out);
         } catch (TemplateException | IOException e) {
@@ -245,9 +246,9 @@ public class CodeEgg {
                 }
 
                 relationDefineBuilder.type(relation.type());
-                relationDefineBuilder.reference(loadEntity(classLoader, relation.entity(), null));
+                relationDefineBuilder.source(loadEntity(classLoader, relation.entity(), null));
                 relationDefineBuilder.primaryKey(relation.field());
-                relationDefineBuilder.entity(loadEntity(classLoader, clazz, null));
+                relationDefineBuilder.target(loadEntity(classLoader, clazz, null));
                 relationDefineBuilder.foreignKey(item.getName());
                 relationDefines.add(relationDefineBuilder.build());
             }
@@ -260,7 +261,6 @@ public class CodeEgg {
 
             builder.name(item.getName());
             builder.type(item.getType().getSimpleName());
-
 
             var code = column.value();
             if (Strings.isNullOrEmpty(code)) {
@@ -292,7 +292,6 @@ public class CodeEgg {
             var scale = column.scale();
             builder.scale(scale);
 
-
             results.add(builder.build());
         }
         moduleBuilder.relations(relationDefines.toArray(new Association[0]));
@@ -315,7 +314,6 @@ public class CodeEgg {
         }
         return result;
     }
-
 
     Map<String, String> loadProp(InputStream file) throws IOException {
         Map<String, String> lines = new LinkedHashMap<>();

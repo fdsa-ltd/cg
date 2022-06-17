@@ -11,20 +11,20 @@ public class Module implements Serializable {
     Entity[] entities;
     Association[] relations;
     /*扩展*/
-    String inputFolder;
-    String outputFolder;
-    String templateFolder;
-    String settingFolder;
+    String input;
+    String output;
+    String template;
+    String setting;
 
-    Module(String name, String description, Entity[] entities, Association[] relations, String inputFolder, String outputFolder, String templateFolder, String settingFolder) {
+    Module(String name, String description, Entity[] entities, Association[] relations, String inputFolder, String output, String template, String setting) {
         this.name = name;
         this.description = description;
         this.entities = entities;
         this.relations = relations;
-        this.inputFolder = inputFolder;
-        this.outputFolder = outputFolder;
-        this.templateFolder = templateFolder;
-        this.settingFolder = settingFolder;
+        this.input = inputFolder;
+        this.output = output;
+        this.template = template;
+        this.setting = setting;
     }
 
     public static ModuleBuilder builder() {

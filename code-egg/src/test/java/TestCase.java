@@ -23,16 +23,6 @@ public class TestCase {
     }
 
     @Test
-    public void testSend() {
-
-        var list = "ilovechina.".split("");
-        Arrays.stream(list).parallel().forEach(a -> {
-            log.info(a);
-        });
-        log.info("finished");
-    }
-
-    @Test
     public void loadProp() throws IOException {
 
         Properties properties = new Properties();
@@ -41,7 +31,7 @@ public class TestCase {
         var data = loadYaml(this.getClass().getResourceAsStream("app.yml"));
         properties.putAll(data);
         for (var entry : properties.entrySet()) {
-            log.info(entry.getKey().toString()+" : "+entry.getValue().toString());
+            log.info(entry.getKey().toString() + " : " + entry.getValue().toString());
         }
     }
 
@@ -94,6 +84,5 @@ public class TestCase {
             return lines;
         }
     }
-
 
 }

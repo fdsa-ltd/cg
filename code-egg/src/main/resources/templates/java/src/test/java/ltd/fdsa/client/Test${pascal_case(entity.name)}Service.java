@@ -1,9 +1,9 @@
-package ${dict('project.package','ltd.fdsa.client')};
+package ${setting('project.package','ltd.fdsa.client')};
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
-import ${dict('project.package','ltd.fdsa.client')}.service.${pascal_case(entity.name)}Service;
-import ${dict('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)};
+import ${setting('project.package','ltd.fdsa.client')}.service.${pascal_case(entity.name)}Service;
+import ${setting('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)};
 
 import org.junit.Assert;
 import org.junit.Test;

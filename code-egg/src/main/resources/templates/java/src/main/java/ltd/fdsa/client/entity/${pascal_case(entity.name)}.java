@@ -1,4 +1,4 @@
-package ${dict('project.package','ltd.fdsa.client')}.entity;
+package ${setting('project.package','ltd.fdsa.client')}.entity;
 
 import lombok.Data;
 import java.util.Date;

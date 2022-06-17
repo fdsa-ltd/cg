@@ -1,10 +1,10 @@
-<#if dict('project.drop.table','true')=='true'>
+<#if setting('project.drop.table','true')=='true'>
 DROP TABLE IF EXISTS "${snake_case(entity.code)}";
 </#if>
 
 CREATE TABLE "${snake_case(entity.code)}" (
 <#list entity.fields  as field>
-    "${snake_case(field.code)}" ${dict('pgsql.type.'+field.type,'pgsql.type.'+field.type)?lower_case} ${field.nullable?then('NULL','NOT NULL') },
+    "${snake_case(field.code)}" ${setting('pgsql.type.'+field.type,'pgsql.type.'+field.type)?lower_case} ${field.nullable?then('NULL','NOT NULL') },
 </#list>
 <#list entity.fields as field>
     <#if field.primary>

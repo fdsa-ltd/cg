@@ -1,12 +1,12 @@
-package ${dict('project.package','ltd.fdsa.client')}.repository.writer;
+package ${setting('project.package','ltd.fdsa.client')}.repository.writer;
 
-import ${dict('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)};
+import ${setting('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)};
 import org.apache.commons.dbutils.ResultSetHandler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException; 
 import lombok.var;
-import ${dict('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)};
+import ${setting('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)};
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.springframework.beans.factory.annotation.Autowired;

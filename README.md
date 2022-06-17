@@ -2,6 +2,35 @@
 
 使用java和freemarker语法生成各类代码或文档。
 
+## 如何使用
+
+在Java项目中增加dependency依赖
+``` xml
+<dependency>
+    <groupId>ltd.fdsa</groupId>
+    <artifactId>code-egg</artifactId>
+    <version>2.1.5-SNAPSHOT</version>
+    <scope>compile</scope>
+</dependency>
+```
+并增加 build plugin
+``` xml
+<plugin>
+    <groupId>ltd.fdsa</groupId>
+    <artifactId>code-egg-maven-plugin</artifactId>
+    <version>2.1.5-SNAPSHOT</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>package</goal>
+            </goals>
+            <configuration>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+目前只有implements IEntity的实体会被识别到。
 ## 模型定义
 
 一个工程即一个模型module，使用java pojo定义多个实体entities和关系relations。

@@ -1,9 +1,9 @@
-package ${dict('project.package','ltd.fdsa.client')}.service.impl;
+package ${setting('project.package','ltd.fdsa.client')}.service.impl;
  
-import ${dict('project.package','ltd.fdsa.client')}.service.${pascal_case(entity.name)}Service;
-import ${dict('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)};
-import ${dict('project.package','ltd.fdsa.client')}.repository.reader.${pascal_case(entity.name)}Reader;
-import ${dict('project.package','ltd.fdsa.client')}.repository.writer.${pascal_case(entity.name)}Writer;
+import ${setting('project.package','ltd.fdsa.client')}.service.${pascal_case(entity.name)}Service;
+import ${setting('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)};
+import ${setting('project.package','ltd.fdsa.client')}.repository.reader.${pascal_case(entity.name)}Reader;
+import ${setting('project.package','ltd.fdsa.client')}.repository.writer.${pascal_case(entity.name)}Writer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

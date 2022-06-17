@@ -1,7 +1,7 @@
-package ${dict('project.package','ltd.fdsa.client')}.service;
+package ${setting('project.package','ltd.fdsa.client')}.service;
 
 import java.util.List;
-import ${dict('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)}; 
+import ${setting('project.package','ltd.fdsa.client')}.entity.${pascal_case(entity.name)}; 
 
 public interface ${pascal_case(entity.name)}Service  {
 

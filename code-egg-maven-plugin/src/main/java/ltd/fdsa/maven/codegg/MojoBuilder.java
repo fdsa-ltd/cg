@@ -36,7 +36,6 @@ public class MojoBuilder extends AbstractMojo {
     @Parameter(property = "setting")
     private String setting;
 
-
     @Override
     @SneakyThrows
     public void execute() {
@@ -46,7 +45,13 @@ public class MojoBuilder extends AbstractMojo {
                 input = this.project.getBuild().getDirectory();
             }
             if (Strings.isNullOrEmpty(output)) {
-                output = "./output";
+                output = this.project.getBuild().getScriptSourceDirectory() + "/project";
+            }
+            if (Strings.isNullOrEmpty(setting)) {
+                setting = this.project.getBuild().getScriptSourceDirectory() + "/settings";
+            }
+            if (Strings.isNullOrEmpty(template)) {
+                template = this.project.getBuild().getScriptSourceDirectory() + "/templates";
             }
             CodeEgg egg = new CodeEgg();
             var builder = Module.builder();

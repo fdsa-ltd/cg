@@ -12,9 +12,9 @@ public class Association implements Serializable {
     String code;
     String remark;
     Type type;
-    Entity reference;
+    Entity source;
     String primaryKey;
-    Entity entity;
+    Entity target;
     String foreignKey;
 
     public enum Type {

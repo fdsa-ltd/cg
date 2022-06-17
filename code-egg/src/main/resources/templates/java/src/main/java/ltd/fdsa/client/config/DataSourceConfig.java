@@ -1,4 +1,4 @@
-package ${dict('project.package','ltd.fdsa.client')}.config;
+package ${setting('project.package','ltd.fdsa.client')}.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;

@@ -1,8 +1,8 @@
-package ${dict('project.package','ltd.fdsa.client')}.config;
+package ${setting('project.package','ltd.fdsa.client')}.config;
 
 
 import lombok.extern.slf4j.Slf4j;
-import ${dict('project.package','ltd.fdsa.client')}.view.Result;
+import ${setting('project.package','ltd.fdsa.client')}.view.Result;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

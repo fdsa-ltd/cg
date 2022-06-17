@@ -1,4 +1,4 @@
-package ${dict('project.package','ltd.fdsa.client')};
+package ${setting('project.package','ltd.fdsa.client')};
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
