@@ -2,7 +2,7 @@ package ltd.fdsa.code.model;
 
 import lombok.Data;
 
-import javax.activation.DataSource;
+import javax.sql.DataSource;
 import java.io.Serializable;
 import java.util.Map;
 

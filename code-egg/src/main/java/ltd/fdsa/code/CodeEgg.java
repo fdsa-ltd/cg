@@ -10,7 +10,7 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import ltd.fdsa.code.annotation.Column;
-import ltd.fdsa.code.annotation.Relation;
+//import ltd.fdsa.code.annotation.Relation;
 import ltd.fdsa.code.annotation.Table;
 import ltd.fdsa.code.extension.*;
 import ltd.fdsa.code.model.Entity;
@@ -22,6 +22,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class CodeEgg {
@@ -182,7 +183,9 @@ public class CodeEgg {
         for (var item : classes) {
             results.add(loadEntity(classLoader, item, moduleBuilder));
         }
-        moduleBuilder.entities(results.toArray(new Entity[0]));
+        moduleBuilder.entities(results.stream().sorted((a, b) -> {
+            return a.getDisplay().compareTo(b.getDisplay());
+        }).collect(Collectors.toList()).toArray(new Entity[0]));
     }
 
     private Entity loadEntity(ClassLoader classLoader, Class<?> item, Module.ModuleBuilder moduleBuilder) {
@@ -223,35 +226,6 @@ public class CodeEgg {
         List<Association> relationDefines = new ArrayList<>();
         for (var item : classLoader.getDeclaredFields(clazz)) {
 
-            var relation = item.getAnnotation(Relation.class);
-            if (relation != null) {
-                var relationDefineBuilder = Association.builder();
-                var name = relation.name();
-                if (Strings.isNullOrEmpty(name)) {
-                    relationDefineBuilder.name(item.getName());
-                } else {
-                    relationDefineBuilder.name(name);
-                }
-                var code = relation.value();
-                if (Strings.isNullOrEmpty(code)) {
-                    relationDefineBuilder.code(item.getName());
-                } else {
-                    relationDefineBuilder.code(name);
-                }
-                var remark = relation.remark();
-                if (Strings.isNullOrEmpty(remark)) {
-                    relationDefineBuilder.remark(item.getName());
-                } else {
-                    relationDefineBuilder.remark(name);
-                }
-
-                relationDefineBuilder.type(relation.type());
-                relationDefineBuilder.source(loadEntity(classLoader, relation.entity(), null));
-                relationDefineBuilder.primaryKey(relation.field());
-                relationDefineBuilder.target(loadEntity(classLoader, clazz, null));
-                relationDefineBuilder.foreignKey(item.getName());
-                relationDefines.add(relationDefineBuilder.build());
-            }
             var builder = Field.builder();
 
             var column = item.getAnnotation(Column.class);
@@ -292,6 +266,34 @@ public class CodeEgg {
             var scale = column.scale();
             builder.scale(scale);
 
+
+            var relation = column.r();
+            if (relation != void.class) {
+                var relationDefineBuilder = Association.builder();
+
+                if (Strings.isNullOrEmpty(column.rnm())) {
+                    relationDefineBuilder.name(item.getName());
+                } else {
+                    relationDefineBuilder.name(column.rnm());
+                }
+                if (Strings.isNullOrEmpty(column.rid())) {
+                    relationDefineBuilder.code(item.getName());
+                } else {
+                    relationDefineBuilder.code(column.rid());
+                }
+                if (Strings.isNullOrEmpty(remark)) {
+                    relationDefineBuilder.remark(item.getName());
+                } else {
+                    relationDefineBuilder.remark(remark);
+                }
+
+                relationDefineBuilder.type(column.rtp());
+                relationDefineBuilder.source(loadEntity(classLoader, relation, null));
+                relationDefineBuilder.primaryKey(column.rid());
+                relationDefineBuilder.target(loadEntity(classLoader, clazz, null));
+                relationDefineBuilder.foreignKey(item.getName());
+                relationDefines.add(relationDefineBuilder.build());
+            }
             results.add(builder.build());
         }
         moduleBuilder.relations(relationDefines.toArray(new Association[0]));

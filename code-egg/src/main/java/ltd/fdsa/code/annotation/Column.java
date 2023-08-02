@@ -21,4 +21,19 @@ public @interface Column {
     int length() default 0;
 
     int scale() default 0;
+
+    Class<?> r() default void.class;
+
+    String rid() default "id";
+
+    String rnm() default "";
+
+    Relation rtp() default Relation.One2One;
+
+    public enum Relation {
+        One2One,
+        One2Many,
+        Many2One,
+        Many2Many,
+    }
 }

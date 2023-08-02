@@ -1,6 +1,6 @@
 # 建模工具
 
-使用java和freemarker语法生成各类代码或文档。
+使用java和freemarker语法生成各类代码和文档。
 
 ## 如何使用
 
@@ -30,15 +30,18 @@
     </executions>
 </plugin>
 ```
-目前只有implements IEntity的实体会被识别到。
+
 ## 模型定义
 
-一个工程即一个模型module，使用java pojo定义多个实体entities和关系relations。
+在Java工程中使用java pojo定义实体entities（@Table）和关系relations（@Relation）。
 
 ## 配置定义
 
-在settings中可以自定义模型的名称，作者、版本、时间以及数据类型映射等。
+在脚本的settings中可以自定义模型的名称，作者、版本、时间以及数据类型映射等。
 
+## 模板定义
+
+在脚本的templates中可以定义输入模板。
 
 #  贡献代码
 
