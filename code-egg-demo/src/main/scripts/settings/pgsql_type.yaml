@@ -1,5 +1,0 @@
-pgsql:
-  type:
-    String: varchar(255)
-    Integer: int4
-    Date: timestamp

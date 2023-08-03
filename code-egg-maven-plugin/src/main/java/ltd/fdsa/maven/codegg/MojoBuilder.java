@@ -45,13 +45,13 @@ public class MojoBuilder extends AbstractMojo {
                 input = this.project.getBuild().getDirectory();
             }
             if (Strings.isNullOrEmpty(output)) {
-                output = this.project.getBuild().getScriptSourceDirectory() + "/project";
+                output = this.project.getBuild().getOutputDirectory() + "/../project";
             }
             if (Strings.isNullOrEmpty(setting)) {
-                setting = this.project.getBuild().getScriptSourceDirectory() + "/settings";
+                setting = this.project.getBuild().getOutputDirectory() + "/../settings";
             }
             if (Strings.isNullOrEmpty(template)) {
-                template = this.project.getBuild().getScriptSourceDirectory() + "/templates";
+                template = this.project.getBuild().getOutputDirectory() + "/../templates";
             }
             CodeEgg egg = new CodeEgg();
             var builder = Module.builder();

@@ -1,5 +1,0 @@
-mssql:
-  type:
-    String: nvarchar(255)
-    Integer: int32
-    Date: datetime

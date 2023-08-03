@@ -1,5 +1,0 @@
-mysql:
-  type:
-    String: char(255)
-    Integer: int
-    Date: datetime
