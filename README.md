@@ -9,7 +9,7 @@
 <dependency>
     <groupId>ltd.fdsa</groupId>
     <artifactId>code-egg</artifactId>
-    <version>2.1.5-SNAPSHOT</version>
+    <version>1.0.0</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -18,7 +18,7 @@
 <plugin>
     <groupId>ltd.fdsa</groupId>
     <artifactId>code-egg-maven-plugin</artifactId>
-    <version>2.1.5-SNAPSHOT</version>
+    <version>1.0.0</version>
     <executions>
         <execution>
             <goals>
@@ -63,3 +63,16 @@
 7. 创建PR，然后提PR到相应的分支。
 
 8. 检验通过的代码会及时随新版发布。
+
+## 发布到中央库的方法
+
+```shell
+gpg --gen-key
+gpg --list-keys
+gpg --keyserver hkp://keyserver.ubuntu.com:11371 --send-keys %pub_key%
+
+mvn versions:set -DnewVersion=1.0.0
+mvn clean deploy -DskipTests -Dmaven.test.skip=true -Possrh  -Dgpg.skip
+mvn versions:revert
+rem mvn versions:commit
+```
