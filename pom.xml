@@ -96,11 +96,11 @@
     <licenses>
         <license>
             <name>MIT</name>
-            <url>https://github.com/openfides/sdo/license.txt</url>
+            <url>https://github.com/openfides/cg/license.txt</url>
         </license>
     </licenses>
     <scm>
-        <connection>https://github.com/openfides/sdo.git</connection>
+        <connection>https://github.com/openfides/cg.git</connection>
         <url>https://github.com/openfides/sdo</url>
     </scm>
     <developers>

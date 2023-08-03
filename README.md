@@ -72,7 +72,7 @@ gpg --list-keys
 gpg --keyserver hkp://keyserver.ubuntu.com:11371 --send-keys %pub_key%
 
 mvn versions:set -DnewVersion=1.0.0
-mvn clean deploy -DskipTests -Dmaven.test.skip=true -Possrh  -Dgpg.skip
+mvn clean deploy -DskipTests -Dmaven.test.skip=true -Possrh -Dgpg.skip
 mvn versions:revert
 rem mvn versions:commit
 ```
