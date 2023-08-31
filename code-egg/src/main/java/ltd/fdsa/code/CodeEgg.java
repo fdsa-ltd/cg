@@ -250,10 +250,12 @@ public class CodeEgg {
             }
             var remark = column.remark();
             if (Strings.isNullOrEmpty(remark)) {
-                builder.remark(item.getName());
-            } else {
-                builder.remark(remark);
+                remark = item.getName();
             }
+            if (item.getType().isEnum()) {
+                remark += " - " + (Arrays.stream(item.getType().getEnumConstants()).map(Object::toString).collect(Collectors.joining(",")));
+            }
+            builder.remark(remark);
             var primary = column.primary();
             builder.primary(primary);
 
