@@ -49,7 +49,7 @@ public class TestCase {
                 if (JsonToken.START_OBJECT.equals(token)) {
                     // do nothing
                 } else if (JsonToken.FIELD_NAME.equals(token)) {
-                    if (key.length() > 0) {
+                    if (!key.isEmpty()) {
                         key = key + DOT;
                     }
                     key = key + parser.getCurrentName();

@@ -1,9 +1,9 @@
-package ltd.fdsa.code;
+package ltd.fdsa.data;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import ltd.fdsa.code.egg.CodeEgg;
-import ltd.fdsa.code.egg.ModelEgg;
+import ltd.fdsa.data.egg.ModelEgg;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.env.OriginTrackedMapPropertySource;

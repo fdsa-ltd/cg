@@ -1,0 +1,8 @@
+pgsql:
+  type:
+    String: varchar(255)
+    Integer: int4
+    Date: timestamp
+    Long: bigint
+    json: varchar(1024)
+    boolean: boolean

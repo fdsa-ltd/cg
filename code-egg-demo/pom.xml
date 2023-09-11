@@ -40,7 +40,7 @@
 <!--                            <input></input>-->
 <!--                            <output>D:\Work\cg\output</output>-->
 <!--                            <template>D:\Work\cg\code-egg\src\main\resources\templates</template>-->
-<!--                            <setting>D:\Work\cg\code-egg\src\main\resources\settings</setting>-->
+<!--                            <setting>D:\Work\cg\code-egg\src\main\resources\config</setting>-->
                         </configuration>
                     </execution>
                 </executions>

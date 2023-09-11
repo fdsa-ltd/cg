@@ -5,8 +5,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import lombok.var;
-import ltd.fdsa.code.CodeEgg;
-import ltd.fdsa.code.model.Module;
+import ltd.fdsa.code.egg.CodeEgg;
+import ltd.fdsa.code.egg.ModelEgg;
+import ltd.fdsa.code.model.Schema;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -14,6 +15,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.springframework.core.env.*;
+
+import java.util.Properties;
 
 @EqualsAndHashCode(callSuper = true)
 @Mojo(name = "package", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true, requiresDependencyResolution = ResolutionScope.RUNTIME)
@@ -48,21 +52,25 @@ public class MojoBuilder extends AbstractMojo {
                 output = this.project.getBuild().getOutputDirectory() + "/../project";
             }
             if (Strings.isNullOrEmpty(setting)) {
-                setting = this.project.getBuild().getOutputDirectory() + "/../settings";
+                setting = this.project.getBuild().getOutputDirectory() + "/../config";
             }
             if (Strings.isNullOrEmpty(template)) {
                 template = this.project.getBuild().getOutputDirectory() + "/../templates";
             }
-            CodeEgg egg = new CodeEgg();
-            var builder = Module.builder();
-            builder.name(this.project.getName());
-            builder.description(this.project.getDescription());
-            builder.inputFolder(input);
-            builder.outputFolder(output);
-            builder.templateFolder(template);
-            builder.settingFolder(setting);
-            egg.execute(builder);
+            Properties environment = new Properties();
+            environment.put("project.name", project.getName());
+            environment.put("project.description", project.getDescription());
+            environment.put("input", input);
+            environment.put("output", output);
+            environment.put("template", template);
+            environment.put("config", setting);
 
+            CodeEgg egg = new CodeEgg();
+
+            var builder = new ModelEgg(environment).builder();
+            for (var item : builder.getModules()) {
+                egg.execute(item);
+            }
         } catch (Exception e) {
             log.error("execute", e);
         }
