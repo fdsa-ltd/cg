@@ -9,7 +9,7 @@
 <dependency>
     <groupId>ltd.fdsa</groupId>
     <artifactId>code-egg</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.5</version>
     <scope>compile</scope>
 </dependency>
 ```
@@ -18,7 +18,7 @@
 <plugin>
     <groupId>ltd.fdsa</groupId>
     <artifactId>code-egg-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.5</version>
     <executions>
         <execution>
             <goals>
@@ -71,8 +71,9 @@ gpg --gen-key
 gpg --list-keys
 gpg --keyserver hkp://keyserver.ubuntu.com:11371 --send-keys %pub_key%
 
-mvn versions:set -DnewVersion=1.0.0
+mvn versions:set -DnewVersion=1.0.5
 mvn clean deploy -DskipTests -Dmaven.test.skip=true -Possrh -Dgpg.skip
+mvn clean javadoc:jar source:jar gpg:sign deploy -Possrh
 mvn versions:revert
 rem mvn versions:commit
 ```

@@ -1,1 +1,1 @@
-mvnDebug ltd.fdsa:code-egg-mavne-plugin:2.1.5-SNAPSHOT:package
+mvn Debug ltd.fdsa:code-egg-mavne-plugin:2.1.5-SNAPSHOT:package
