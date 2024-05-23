@@ -6,7 +6,7 @@
     <groupId>ltd.fdsa</groupId>
     <artifactId>code-egg-parent</artifactId>
     <name>code egg parent</name>
-    <version>2.1.5-SNAPSHOT</version>
+    <version>1.0.1</version>
     <description>聚合项目管理</description>
     <packaging>pom</packaging>
     <parent>
@@ -70,7 +70,7 @@
             <dependency>
                 <groupId>ltd.fdsa</groupId>
                 <artifactId>code-egg</artifactId>
-                <version>2.1.5-SNAPSHOT</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
@@ -97,18 +97,18 @@
     <licenses>
         <license>
             <name>MIT</name>
-            <url>https://github.com/openfides/cg/license.txt</url>
+            <url>https://github.com/openyeap/cg/license.txt</url>
         </license>
     </licenses>
     <scm>
-        <connection>https://github.com/openfides/cg.git</connection>
-        <url>https://github.com/openfides/sdo</url>
+        <connection>https://github.com/openyeap/cg.git</connection>
+        <url>https://github.com/openyeap/sdo</url>
     </scm>
     <developers>
         <developer>
             <name>zhumingwu</name>
             <email>zhumingwu@126.com</email>
-            <url>https://blog.zhumingwu.cn</url>
+            <url>https://www.zhumingwu.cn</url>
         </developer>
     </developers>
   <profiles>

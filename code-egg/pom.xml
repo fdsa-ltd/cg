@@ -3,13 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>code-egg</artifactId>
-    <version>2.1.5-SNAPSHOT</version>
+    <version>1.0.1</version>
     <description>code egg core</description>
     <packaging>jar</packaging>
     <parent>
         <groupId>ltd.fdsa</groupId>
         <artifactId>code-egg-parent</artifactId>
-        <version>2.1.5-SNAPSHOT</version>
+        <version>1.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <dependencies>
